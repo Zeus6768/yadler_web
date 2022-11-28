@@ -3,6 +3,6 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-@app.get('/yadler')
+@app.get('/')
 async def root():
 	return FileResponse('index.html')
