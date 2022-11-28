@@ -6,6 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style type="text/css">
+
+    fieldset {
+      width: 300px;
+    }
+
     .tg {
       border-collapse: collapse;
       border-color: #ccc;
@@ -70,6 +75,16 @@
       <label for="bench_press">벤치프레스</label>
       <input id="input_bench_press" name="bench_press" type="text" pattern="\d{2,3}" title="100~999 사이의 수를 입력하세요.">
       <input type="submit" value="submit" onclick="saveInputs()">
+      <br>
+      <label for="week-select">주차 선택</label>
+      <select id="week-select" onchange="selectWeek(this)">
+          <option id="week_1" value="1">1주차</option>
+          <option id="week_2" value="2">2주차</option>
+          <option id="week_3" value="3">3주차</option>
+          <option id="week_4" value="4">4주차</option>
+          <option id="week_5" value="5">5주차</option>
+          <option id="week_6" value="6">6주차</option>
+      </select>
     </fieldset>
     <table class="tg" style="margin-top: 10px;">
       <thead>
@@ -233,7 +248,12 @@
   }
 
   function mRound(number) {
-    // 권 모씨 구현 예정
+    // 2.5로 나누어 떨어지는 수로 반올림
+    if (parseInt(number/1.25)%2 === 0) {
+      return parseInt(number/1.25) * 1.25
+    } else {
+      return (parseInt(number/1.25)+1) * 1.25
+    }
   }
 
   function saveInputs() {
@@ -243,33 +263,80 @@
       setCookie(type, value, 86400e3*49);   // Save cookie for 49 days
     });
     alert("저장되었습니다.")
-    calculate()
+    initView()
   }
 
-  function calculate() {
+  function selectWeek(target) {
+    // 1. 쿠키에 주차 저장
+    const value = target.value;
+    setCookie("week", value, 86400e3*49)
+
+    // 2. view 갱신
+    initView()
+  }
+
+  function calculate(week) {
+
+    const warmUpSetConstant = 0.3;
+    const mainSetConstantWeek1 = 0.55;
+    const mainSetConstantWeek2 = 0.6;
+    const mainSetConstantWeek3 = 0.75;
+    const jokerSetConstantWeek1 = 0.85;
+    const jokerSetConstantWeek2 = 0.9;
+    const jokerSetConstantWeek3 = 0.95;
+
+    let mainSetConstant;
+    let jokerSetConstant;
+    let add1 = 0;
+    let add2 = 0;
+
+    if (week == false || week === '1' || week === '4') {
+      mainSetConstant = mainSetConstantWeek1;
+      jokerSetConstant = jokerSetConstantWeek1;
+    }
+
+    if (week === '2' || week === '5') {
+      mainSetConstant = mainSetConstantWeek2;
+      jokerSetConstant = jokerSetConstantWeek2;
+    }
+
+    if (week === '3' || week === '6') {
+      mainSetConstant = mainSetConstantWeek3;
+      jokerSetConstant = jokerSetConstantWeek3;
+    }
+
     // main and pr sets
     for (let i=1; i<4;i++) {
       TYPES.forEach(type => {
-        let weight = getCookie(type);
-        document.getElementById("weight_" + type + "_warmup_" + i).textContent = (weight * (0.3 + 0.1 * i)).toFixed(1);   // warm-up sets
-        document.getElementById("weight_" + type + "_main_" + i).textContent = (weight * (0.55 + 0.1 * i)).toFixed(1);    // main sets
-        document.getElementById("weight_" + type + "_joker_" + i).textContent = (weight * (0.85 + 0.075 * i)).toFixed(1); // joker sets
+        let weight = Number(getCookie(type));
+        document.getElementById("weight_" + type + "_warmup_" + i).textContent = mRound((weight * (warmUpSetConstant + 0.1 * i)).toFixed(1));   // warm-up sets
+        document.getElementById("weight_" + type + "_main_" + i).textContent = mRound((weight * (mainSetConstant + 0.1 * i)).toFixed(1));    // main sets
+        document.getElementById("weight_" + type + "_joker_" + i).textContent = mRound((weight * (jokerSetConstant + 0.075 * i)).toFixed(1)); // joker sets
       });
     }
 
     TYPES.forEach(type => {
       let weight = getCookie(type);
-      document.getElementById("weight_" + type + "_fsl").textContent = (weight * 0.65).toFixed(1);
-      document.getElementById("weight_" + type + "_ssl").textContent = (weight * 0.75).toFixed(1);
+      document.getElementById("weight_" + type + "_fsl").textContent = mRound((weight * 0.65).toFixed(1));
+      document.getElementById("weight_" + type + "_ssl").textContent = mRound((weight * 0.75).toFixed(1));
     })
   }
 
   function initView() {
+    
+    // inputs
     TYPES.forEach(type => {
       let weight = getCookie(type);
       document.getElementById("input_" + type).value = weight;
     });
-    calculate();
+
+    // week
+    const week = getCookie("week");
+    document.getElementById("week_" + week).setAttribute("selected", true);
+
+    // weight values
+    calculate(week);
+    
   }
 
   initView()
