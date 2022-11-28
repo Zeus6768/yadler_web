@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style type="text/css">
+    .tg {
+      border-collapse: collapse;
+      border-color: #ccc;
+      border-spacing: 0;
+    }
+
+    .tg td {
+      background-color: #fff;
+      border-color: #ccc;
+      border-style: solid;
+      border-width: 1px;
+      color: #333;
+      font-size: 12px;
+      overflow: hidden;
+      padding: 10px 5px;
+      word-break: normal;
+    }
+
+    .tg th {
+      background-color:#f0f0f0;
+      border-color:#ccc;
+      border-style:solid;
+      border-width:1px;
+      color:#333;
+      font-family:Arial, sans-serif;
+      font-size: 12px;
+      font-weight:normal;
+      overflow:hidden;
+      padding:10px 5px;
+      word-break:normal;
+    }
+
+    .tg .tg-v6uc {
+      background-color:#f9f9f9;
+      font-family:"Courier New", Courier, monospace !important;
+      text-align:center;
+      vertical-align:middle
+    }
+
+    .tg .tg-6sxp {
+      font-family:"Courier New", Courier, monospace !important;
+      text-align:center;
+      vertical-align:middle
+    }
+  </style>
+  <title>야들러 7주 루틴 베타버전</title>
+</head>
+
+<body>
+  <form onsubmit="return false;">
+    <fieldset>
+      <legend>Training Max 입력</legend>
+      <label for="squat">스쿼트</label>
+      <input id="input_squat" name="squat" type="text" pattern="\d{2,3}" title="100~999 사이의 수를 입력하세요.">
+      <br>
+      <label for="shoulder_press">숄더프레스</label>
+      <input id="input_shoulder_press" name="shoulder_press" type="text" pattern="\d{2,3}" title="100~999 사이의 수를 입력하세요.">
+      <br>
+      <label for="deadlift">데드리프트</label>
+      <input id="input_deadlift" name="deadlift" type="text" pattern="\d{2,3}" title="100~999 사이의 수를 입력하세요.">
+      <br>
+      <label for="bench_press">벤치프레스</label>
+      <input id="input_bench_press" name="bench_press" type="text" pattern="\d{2,3}" title="100~999 사이의 수를 입력하세요.">
+      <input type="submit" value="submit" onclick="saveInputs()">
+    </fieldset>
+    <table class="tg" style="margin-top: 10px;">
+      <thead>
+        <tr>
+          <th class="tg-6sxp"></th>
+          <th class="tg-6sxp"></th>
+          <th class="tg-6sxp"></th>
+          <th class="tg-6sxp">월</th>
+          <th class="tg-6sxp">화</th>
+          <th class="tg-6sxp">목</th>
+          <th class="tg-6sxp">금</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tg-v6uc">순서</td>
+          <td class="tg-v6uc">횟수</td>
+          <td class="tg-v6uc">세트</td>
+          <td class="tg-v6uc">스쿼트</td>
+          <td class="tg-v6uc">숄더프레스</td>
+          <td class="tg-v6uc">데드리프트</td>
+          <td class="tg-v6uc">벤치프레스</td>
+        </tr>
+        <tr>
+          <td class="tg-6sxp">워밍업1</td>
+          <td class="tg-6sxp">5</td>
+          <td class="tg-6sxp">1</td>
+          <td id="weight_squat_warmup_1" class="tg-6sxp"></td>
+          <td id="weight_shoulder_press_warmup_1" class="tg-6sxp"></td>
+          <td id="weight_deadlift_warmup_1" class="tg-6sxp"></td>
+          <td id="weight_bench_press_warmup_1" class="tg-6sxp"></td>
+        </tr>
+        <tr>
+          <td class="tg-v6uc">워밍업2</td>
+          <td class="tg-v6uc">5</td>
+          <td class="tg-v6uc">1</td>
+          <td id="weight_squat_warmup_2" class="tg-6sxp"></td>
+          <td id="weight_shoulder_press_warmup_2" class="tg-6sxp"></td>
+          <td id="weight_deadlift_warmup_2" class="tg-6sxp"></td>
+          <td id="weight_bench_press_warmup_2" class="tg-6sxp"></td>
+        </tr>
+        <tr>
+          <td class="tg-6sxp">워밍업3</td>
+          <td class="tg-6sxp">3</td>
+          <td class="tg-6sxp">1</td>
+          <td id="weight_squat_warmup_3" class="tg-6sxp"></td>
+          <td id="weight_shoulder_press_warmup_3" class="tg-6sxp"></td>
+          <td id="weight_deadlift_warmup_3" class="tg-6sxp"></td>
+          <td id="weight_bench_press_warmup_3" class="tg-6sxp"></td>
+        </tr>
+        <tr>
+          <td class="tg-v6uc">본세트1</td>
+          <td class="tg-v6uc">5</td>
+          <td id="reps_main_1" class="tg-v6uc">1</td>
+          <td id="weight_squat_main_1" class="tg-6sxp"></td>
+          <td id="weight_shoulder_press_main_1" class="tg-6sxp"></td>
+          <td id="weight_deadlift_main_1" class="tg-6sxp"></td>
+          <td id="weight_bench_press_main_1" class="tg-6sxp"></td>
+        </tr>
+        <tr>
+          <td class="tg-6sxp">본세트2</td>
+          <td class="tg-6sxp">5</td>
+          <td id="reps_main_2" class="tg-6sxp">1</td>
+          <td id="weight_squat_main_2" class="tg-6sxp"></td>
+          <td id="weight_shoulder_press_main_2" class="tg-6sxp"></td>
+          <td id="weight_deadlift_main_2" class="tg-6sxp"></td>
+          <td id="weight_bench_press_main_2" class="tg-6sxp"></td>
+        </tr>
+        <tr>
+          <td class="tg-v6uc">PR세트</td>
+          <td class="tg-v6uc">5</td>
+          <td id="reps_main_3" class="tg-v6uc">1</td>
+          <td id="weight_squat_main_3" class="tg-6sxp"></td>
+          <td id="weight_shoulder_press_main_3" class="tg-6sxp"></td>
+          <td id="weight_deadlift_main_3" class="tg-6sxp"></td>
+          <td id="weight_bench_press_main_3" class="tg-6sxp"></td>
+        </tr>
+        <tr>
+          <td class="tg-6sxp" colspan="3">PR세트반복수</td>
+          <td id="reps_squat_pr" class="tg-6sxp"></td>
+          <td id="reps_shoulder_press_pr" class="tg-6sxp"></td>
+          <td id="reps_deadlift_pr" class="tg-6sxp"></td>
+          <td id="reps_bench_press_pr"class="tg-6sxp"></td>
+        </tr>
+        <tr>
+          <td class="tg-v6uc" colspan="3">추정 1RM</td>
+          <td id="weight_squat_rm" class="tg-6sxp"></td>
+          <td id="weight_shoulder_press_rm" class="tg-6sxp"></td>
+          <td id="weight_deadlift_rm" class="tg-6sxp"></td>
+          <td id="weight_bench_press_rm" class="tg-6sxp"></td>
+        </tr>
+        <tr>
+          <td class="tg-6sxp">조커1</td>
+          <td class="tg-6sxp">1</td>
+          <td class="tg-6sxp">1</td>
+          <td id="weight_squat_joker_1" class="tg-6sxp"></td>
+          <td id="weight_shoulder_press_joker_1" class="tg-6sxp"></td>
+          <td id="weight_deadlift_joker_1" class="tg-6sxp"></td>
+          <td id="weight_bench_press_joker_1" class="tg-6sxp"></td>
+        </tr>
+        <tr>
+          <td class="tg-v6uc">조커2</td>
+          <td class="tg-v6uc">1</td>
+          <td class="tg-v6uc">1</td>
+          <td id="weight_squat_joker_2" class="tg-6sxp"></td>
+          <td id="weight_shoulder_press_joker_2" class="tg-6sxp"></td>
+          <td id="weight_deadlift_joker_2" class="tg-6sxp"></td>
+          <td id="weight_bench_press_joker_2" class="tg-6sxp"></td>
+        </tr>
+        <tr>
+          <td class="tg-6sxp">조커3</td>
+          <td class="tg-6sxp">1</td>
+          <td class="tg-6sxp">1</td>
+          <td id="weight_squat_joker_3" class="tg-6sxp"></td>
+          <td id="weight_shoulder_press_joker_3" class="tg-6sxp"></td>
+          <td id="weight_deadlift_joker_3" class="tg-6sxp"></td>
+          <td id="weight_bench_press_joker_3" class="tg-6sxp"></td>
+        </tr>
+        <tr>
+          <td class="tg-v6uc">FSL</td>
+          <td class="tg-v6uc">8</td>
+          <td class="tg-v6uc">5</td>
+          <td id="weight_squat_fsl" class="tg-6sxp"></td>
+          <td id="weight_shoulder_press_fsl" class="tg-6sxp"></td>
+          <td id="weight_deadlift_fsl" class="tg-6sxp"></td>
+          <td id="weight_bench_press_fsl" class="tg-6sxp"></td>
+        </tr>
+        <tr>
+          <td class="tg-6sxp">SSL</td>
+          <td class="tg-6sxp">8</td>
+          <td class="tg-6sxp">5</td>
+          <td id="weight_squat_ssl" class="tg-6sxp"></td>
+          <td id="weight_shoulder_press_ssl" class="tg-6sxp"></td>
+          <td id="weight_deadlift_ssl" class="tg-6sxp"></td>
+          <td id="weight_bench_press_ssl" class="tg-6sxp"></td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+</body>
+
+</html>
+
+<script>
+
+  const TYPES = ["squat", "shoulder_press", "deadlift", "bench_press"]
+
+  function setCookie(key, value, expiredays) {
+    const expiredAt = new Date();
+    expiredAt.setDate(expiredAt.getDate() + expiredays);
+    document.cookie = key + "=" + escape(value) + "; path=/; expires=" + expiredAt.toUTCString() + ";";
+  }
+
+  function getCookie(key) {
+    key = new RegExp(key + "=([^;]*)");
+    return key.test(document.cookie) ? unescape(RegExp.$1) : '';
+  }
+
+  function isCookie(key) {
+    return getCookie != '' ? true : false;
+  }
+
+  function mRound(number) {
+    // 권 모씨 구현 예정
+  }
+
+  function saveInputs() {
+    TYPES.forEach(type => {
+      let value = document.getElementById("input_" + type).value;
+      if (value === '') value = 0;
+      setCookie(type, value, 86400e3*49);   // Save cookie for 49 days
+    });
+    alert("저장되었습니다.")
+    calculate()
+  }
+
+  function calculate() {
+    // main and pr sets
+    for (let i=1; i<4;i++) {
+      TYPES.forEach(type => {
+        let weight = getCookie(type);
+        document.getElementById("weight_" + type + "_warmup_" + i).textContent = (weight * (0.3 + 0.1 * i)).toFixed(1);   // warm-up sets
+        document.getElementById("weight_" + type + "_main_" + i).textContent = (weight * (0.55 + 0.1 * i)).toFixed(1);    // main sets
+        document.getElementById("weight_" + type + "_joker_" + i).textContent = (weight * (0.85 + 0.075 * i)).toFixed(1); // joker sets
+      });
+    }
+
+    TYPES.forEach(type => {
+      let weight = getCookie(type);
+      document.getElementById("weight_" + type + "_fsl").textContent = (weight * 0.65).toFixed(1);
+      document.getElementById("weight_" + type + "_ssl").textContent = (weight * 0.75).toFixed(1);
+    })
+  }
+
+  function initView() {
+    TYPES.forEach(type => {
+      let weight = getCookie(type);
+      document.getElementById("input_" + type).value = weight;
+    });
+    calculate();
+  }
+
+  initView()
+</script>
